@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Query, Param } from '@nestjs/common';
 import { MyAnimeService } from './myanime.service';
 
 @Controller('anime')
@@ -46,4 +46,16 @@ export class MyAnimeController {
     }
     return this.myAnimeService.searchAnime(query);
   }
+
+  // Search anime by ID (using Jikan API)
+  @Get(':id')
+  async getAnimeDetails(@Param('id') id: string) {
+    const animeId = parseInt(id);
+    if (isNaN(animeId)) {
+      throw new BadRequestException('Invalid anime ID');
+    }
+    return this.myAnimeService.getAnimeDetails(animeId);
+  }
+
+  
 }

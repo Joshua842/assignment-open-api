@@ -169,4 +169,27 @@ export class MyAnimeService {
     }
   }
 
+  // Get anime details by anime ID (using Jikan API)
+  async getAnimeDetails(animeId: number): Promise<any> {
+    try {
+      const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
+
+      const anime = response.data.data;
+      return {
+        Message: `🔎 Here’s everything you need to know about "${anime.title}". Dive deeper into this anime’s world!`,
+        details: {
+          Official_Title: anime.title,
+          Synopsis: anime.synopsis,
+          Episodes: anime.episodes,
+          Rating: anime.score,
+          ImageUrl: anime.images.jpg.image_url,
+          Genres: anime.genres.map((genre: any) => genre.name).join(', '),
+        },
+      };
+    } catch (error) {
+      console.error('Error fetching anime details:', error);
+      throw new InternalServerErrorException('Failed to fetch anime details');
+    }
+  }
+
 }
