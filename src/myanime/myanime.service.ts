@@ -119,4 +119,30 @@ export class MyAnimeService {
       throw new InternalServerErrorException('Error fetching anime by genre');
     }
   }
+
+  // Get seasonal anime (using Jikan API) and sort by score
+  async getSeasonalAnime(season: string, year: number): Promise<any> {
+    try {
+      const response = await axios.get(`https://api.jikan.moe/v4/seasons/${year}/${season}`);
+
+      // Sort by rating in descending order (highest rating first)
+      const seasonalAnime = response.data.data
+        .map((anime: any) => ({
+          Title: anime.title,
+          Season: `${season} ${year}`,
+          Rating: anime.score || 0, // Default to 0 if no rating
+          ImageUrl: anime.images.jpg.image_url,
+        }))
+        .sort((a: any, b: any) => b.Rating - a.Rating); // Sort in descending order
+
+      return {
+        Message: `🌸 Dive into the anime world of the ${season} ${year} season! Here are some fan favorites based on ratings and popularity:`,
+        Anime_List: seasonalAnime,
+      };
+    } catch (error) {
+      console.error('Error fetching seasonal anime:', error);
+      throw new InternalServerErrorException(`Failed to fetch seasonal anime for ${season} ${year}`);
+    }
+  }
+
 }

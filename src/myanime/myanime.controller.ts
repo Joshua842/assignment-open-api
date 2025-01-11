@@ -29,4 +29,12 @@ export class MyAnimeController {
     }
   }
 
+  @Get('seasonal')
+  async getSeasonalAnime(@Query('season') season: string, @Query('year') year: string) {
+    const yearNum = parseInt(year);
+    if (!season || isNaN(yearNum)) {
+      throw new BadRequestException('Both "season" and "year" query parameters are required and must be valid');
+    }
+    return this.myAnimeService.getSeasonalAnime(season, yearNum);
+  }
 }
