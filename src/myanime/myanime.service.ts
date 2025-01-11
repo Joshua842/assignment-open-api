@@ -145,4 +145,28 @@ export class MyAnimeService {
     }
   }
 
+  // Search anime by name (using Jikan API)
+  async searchAnime(query: string): Promise<any> {
+    try {
+      const response = await axios.get('https://api.jikan.moe/v4/anime', {
+        params: { q: query, limit: 10 },
+      });
+
+      const searchResults = response.data.data.map((anime: any) => ({
+        Official_Title: anime.title,
+        Rating: anime.score,
+        ImageUrl: anime.images.jpg.image_url,
+        Genres: anime.genres.map((genre: any) => genre.name).join(', '),
+      }));
+
+      return {
+        Message: `🔍 Searching for anime with the title "${query}"? Here are the results that match your query!`,
+        Recommendations: searchResults,
+      };
+    } catch (error) {
+      console.error('Error searching for anime:', error);
+      throw new InternalServerErrorException(`Failed to search for anime with query: ${query}`);
+    }
+  }
+
 }
