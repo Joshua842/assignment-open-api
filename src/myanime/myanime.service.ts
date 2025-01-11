@@ -192,4 +192,26 @@ export class MyAnimeService {
     }
   }
 
+  // Get news for a specific anime (using Jikan API)
+  async getAnimeNews(animeId: number, page: number = 1, limit: number = 10): Promise<any> {
+    try {
+      const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}/news`, {
+        params: { page: page, limit: limit },
+      });
+
+      const animeResponse = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
+      const animeTitle = animeResponse.data.data.title;
+      return {
+        Message: `📰 Here are the latest news updates for the anime "${animeTitle}". Stay up to date with all the exciting happenings!`,
+        News: response.data.data.map((news: any) => ({
+          Official_Title: news.title,
+          Date_Released: news.date,
+          URL: news.url,
+        })),
+      };
+    } catch (error) {
+      console.error('Error fetching anime news:', error);
+      throw new InternalServerErrorException(`Failed to fetch news for anime ID: ${animeId}`);
+    }
+  }
 }

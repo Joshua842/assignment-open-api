@@ -57,5 +57,9 @@ export class MyAnimeController {
     return this.myAnimeService.getAnimeDetails(animeId);
   }
 
-  
+  // Get news by anime ID (using Jikan API)
+  @Get('news/:animeId')
+  async getAnimeNews(@Param('animeId') animeId: number) {
+    return this.myAnimeService.getAnimeNews(animeId);
+  }
 }
