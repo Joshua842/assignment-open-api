@@ -37,4 +37,13 @@ export class MyAnimeController {
     }
     return this.myAnimeService.getSeasonalAnime(season, yearNum);
   }
+
+  // Search anime by name (using Jikan API)
+  @Get('search')
+  async searchAnime(@Query('q') query: string) {
+    if (!query) {
+      throw new BadRequestException('Query parameter "q" is required');
+    }
+    return this.myAnimeService.searchAnime(query);
+  }
 }
